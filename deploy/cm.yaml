@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-application-config
+  namespace: infra-strimzi
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "infra-kafka-cluster-kafka-bootstrap:9094"
+  KAFKA_TOPIC: "test-topic"

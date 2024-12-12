@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer
+  namespace: infra-strimzi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      containers:
+        - name: kafka-producer
+          image: davidmachacek/kafka-producer:20241114.1
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-producer-config
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-producer-config
+                  key: KAFKA_TOPIC
+            - name: SSL_TRUSTSTORE_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-ca.crt"
+            - name: SSL_KEYSTORE_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-user.crt"
+            - name: SSL_KEY_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-user.key"
+            - name: SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+            - name: SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+            - name: SSL_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+          volumeMounts:
+            - name: kafka-tls
+              mountPath: "/etc/kafka/secrets"
+              readOnly: true
+      volumes:
+        - name: kafka-tls
+          secret:
+            secretName: test-user
+            items:
+              - key: user-cloudhub-writer-ca.crt
+                path: user-cloudhub-writer-ca.crt
+              - key: user-cloudhub-writer-user.crt
+                path: user-cloudhub-writer-user.crt
+              - key: user-cloudhub-writer-user.key
+                path: user-cloudhub-writer-user.key

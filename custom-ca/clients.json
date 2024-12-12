@@ -1,0 +1,14 @@
+{
+  "CN": "CloudHub ClientsCA",
+  "names": [
+    {
+      "C":  "CZ",
+      "L":  "Prague",
+      "O":  "CloudHub"
+    }
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  }
+}

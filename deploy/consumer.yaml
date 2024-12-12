@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer
+  namespace: infra-strimzi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer
+    spec:
+      containers:
+        - name: kafka-consumer
+          image: davidmachacek/kafka-consumer:20241114.1  # Replace with your consumer image
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-consumer-config
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-consumer-config
+                  key: KAFKA_TOPIC
+            - name: KAFKA_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-consumer-config
+                  key: KAFKA_GROUP_ID
+            - name: SSL_TRUSTSTORE_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-ca.crt"
+            - name: SSL_KEYSTORE_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-user.crt"
+            - name: SSL_KEY_LOCATION
+              value: "/etc/kafka/secrets/user-cloudhub-writer-user.key"
+            - name: SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+            - name: SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+            - name: SSL_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-user
+                  key: user.password
+          volumeMounts:
+            - name: kafka-tls
+              mountPath: "/etc/kafka/secrets"
+              readOnly: true
+      volumes:
+        - name: kafka-tls
+          secret:
+            secretName: test-user
+            items:
+              - key: user-cloudhub-writer-ca.crt
+                path: user-cloudhub-writer-ca.crt
+              - key: user-cloudhub-writer-user.crt
+                path: user-cloudhub-writer-user.crt
+              - key: user-cloudhub-writer-user.key
+                path: user-cloudhub-writer-user.key

@@ -1,0 +1,27 @@
+FROM nginx:alpine
+
+ENV CRUISE_CONTROL_UI_VERSION=0.4.0
+ENV NGINX_HOME=/usr/share/nginx/html
+
+# Install required tools and download Cruise Control UI
+RUN apk add --no-cache curl tar && \
+    curl -LO https://github.com/linkedin/cruise-control-ui/releases/download/v${CRUISE_CONTROL_UI_VERSION}/cruise-control-ui-${CRUISE_CONTROL_UI_VERSION}.tar.gz && \
+    mkdir -p ${NGINX_HOME} && \
+    tar xvfz cruise-control-ui-${CRUISE_CONTROL_UI_VERSION}.tar.gz -C ${NGINX_HOME} --strip-components=2 && \
+    rm -f cruise-control-ui-${CRUISE_CONTROL_UI_VERSION}.tar.gz && \
+    echo "dev,dev,/kafkacruisecontrol/" > "${NGINX_HOME}/static/config.csv" && \
+    # Adjust permissions for OpenShift compatibility
+    chgrp -R 0 ${NGINX_HOME} && \
+    chmod -R g+rw ${NGINX_HOME}
+
+# Allow arbitrary user to write to NGINX logs and temporary files
+RUN chgrp -R 0 /var/cache/nginx /var/run /var/log/nginx && \
+    chmod -R g+rw /var/cache/nginx /var/run /var/log/nginx
+
+# Ensure container runs as an arbitrary non-root user
+USER 1001
+
+EXPOSE 9090
+
+# Run Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]

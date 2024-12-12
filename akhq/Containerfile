@@ -1,0 +1,5 @@
+FROM tchiotludo/akhq:0.25.1
+
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
+
