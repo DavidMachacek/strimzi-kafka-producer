@@ -29,3 +29,23 @@ openssl pkcs8 -topk8 -nocrypt -in ca-key.pem -out ca.key
 openssl pkcs8 -topk8 -nocrypt -in intermediate-key.pem -out intermediate.key
 openssl pkcs8 -topk8 -nocrypt -in clients-key.pem -out clients.key
 openssl pkcs8 -topk8 -nocrypt -in cluster-key.pem -out cluster.key
+
+
+# Optional: Export to PKCS#12 (adjust password as needed)
+# Export PKCS#12 for cluster
+echo "Exporting PKCS#12 for cluster"
+openssl pkcs12 -export \
+  -in cluster-bundle.crt \
+  -inkey cluster.key \
+  -out cluster.p12 \
+  -name "cluster" \
+  -passout pass:password
+
+# Export PKCS#12 for clients
+echo "Exporting PKCS#12 for clients"
+openssl pkcs12 -export \
+  -in clients-bundle.crt \
+  -inkey clients.key \
+  -out clients.p12 \
+  -name "clients" \
+  -passout pass:password
