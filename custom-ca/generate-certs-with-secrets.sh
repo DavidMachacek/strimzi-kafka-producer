@@ -74,7 +74,7 @@ metadata:
   labels:
     strimzi.io/cluster: ${KAFKA_CLUSTER_NAME}
     strimzi.io/kind: Kafka
-type: kubernetes.io/tls
+type: Opaque
 data:
   ca.crt: $(base64 -i cluster-bundle.crt)
   ca.p12: $(base64 -i cluster.p12)
@@ -91,7 +91,7 @@ metadata:
   labels:
     strimzi.io/cluster: ${KAFKA_CLUSTER_NAME}
     strimzi.io/kind: Kafka
-type: kubernetes.io/tls
+type: Opaque
 data:
   ca.key: $(base64 -i cluster.key)
 EOF
@@ -106,7 +106,7 @@ metadata:
   labels:
     strimzi.io/cluster: ${KAFKA_CLUSTER_NAME}
     strimzi.io/kind: Kafka
-type: kubernetes.io/tls
+type: Opaque
 data:
   ca.crt: $(base64 -i clients-bundle.crt)
   ca.p12: $(base64 -i clients.p12)
@@ -123,7 +123,7 @@ metadata:
   labels:
     strimzi.io/cluster: ${KAFKA_CLUSTER_NAME}
     strimzi.io/kind: Kafka
-type: kubernetes.io/tls
+type: Opaque
 data:
   ca.key: $(base64 -i clients.key)
 EOF

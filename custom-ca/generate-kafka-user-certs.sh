@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-KAFKA_USERNAME=cloudhub-one-reader
+KAFKA_USERNAME=cloudhub-one-writer
 KAFKA_USERNAME_PASSWORD=password
 
 echo "Generating CA"
