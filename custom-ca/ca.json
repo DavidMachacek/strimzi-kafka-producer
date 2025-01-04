@@ -1,10 +1,10 @@
 {
-  "CN": "CloudHub RootCA",
+  "CN": "B01-TINF Kafka RootCA",
   "names": [
     {
       "C":  "CZ",
       "L":  "Prague",
-      "O":  "CloudHub"
+      "O":  "PPFBanka"
     }
   ],
   "key": {

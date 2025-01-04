@@ -12,7 +12,7 @@ openssl req -new -newkey rsa:2048 -keyout $KAFKA_USERNAME-certificate-to-sign.ke
 echo "Sign the CSR with the CA Certificate"
 openssl x509 -req  \
   -in $KAFKA_USERNAME-certificate-to-sign.csr \
-  -CA clients.pem -CAkey clients.key -CAcreateserial  \
+  -CA output/clients.pem -CAkey output/clients.key -CAcreateserial  \
   -out $KAFKA_USERNAME-signed-certificate.crt  \
   -days 365
 
@@ -20,7 +20,7 @@ echo "Exporting to p12 format with password"
 openssl pkcs12 -export \
   -in $KAFKA_USERNAME-signed-certificate.crt \
   -inkey $KAFKA_USERNAME-certificate-to-sign.key \
-  -certfile clients.pem \
+  -certfile output/clients.pem \
   -passout pass:"$KAFKA_USERNAME_PASSWORD" -passin pass:$KAFKA_USERNAME_PASSWORD \
   -out $KAFKA_USERNAME-user.p12 \
   -name $KAFKA_USERNAME-user
